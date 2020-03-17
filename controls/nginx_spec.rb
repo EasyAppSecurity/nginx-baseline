@@ -301,7 +301,7 @@ control 'cis_2_1_2' do
   title 'Check for HTTP WebDAV module install'
   desc 'WebDAV functionality opens up an unnecessary path for exploiting your web server. Through misconfigurations of WebDAV operations, an attacker may be able to access and manipulate files on the server.'
   describe command('nginx -V 2>&1 | grep http_dav_module') do
-    its(:stdout) { should eq '' }
+    its(:stdout) { should be_empty }
   end
 end
 
@@ -310,7 +310,7 @@ control 'cis_2_1_3' do
   title 'Check modules with gzip functionality install'
   desc 'Compression has been linked with the Breach attack and others. While the Breach attack has been mitigated with modern usages of the HTTP protocol, disabling the use of compression is considered a defense-in-depth strategy to mitigate other attacks. '
   describe command('nginx -V 2>&1 | grep "http_gzip_module\|http_gzip_static_module"') do
-    its(:stdout) { should eq '' }
+    its(:stdout) { should be_empty }
   end
 end
 
@@ -320,9 +320,7 @@ control 'cis_2_1_4' do
   desc 'Automated directory listings may reveal information helpful to an attacker, such as naming conventions and directory paths. Directory listings may also reveal files that were not intended to be revealed.'
   
   only_if('autoindex option not found') do
-    describe command('egrep -i "^\s*autoindex\s+" /etc/nginx/nginx.conf') do
-		its(:stdout) { should eq '' }
-	end
+    command('egrep -i "^\s*autoindex\s+" /etc/nginx/nginx.conf') eq ''
   end
   
   describe parse_config(nginx_parsed_config, options) do
