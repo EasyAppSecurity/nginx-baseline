@@ -319,9 +319,7 @@ control 'cis_2_1_4' do
   title 'Check autoindex module is disabled'
   desc 'Automated directory listings may reveal information helpful to an attacker, such as naming conventions and directory paths. Directory listings may also reveal files that were not intended to be revealed.'
   
-  only_if('autoindex option not found') do
-    command('egrep -i "^\s*autoindex\s+" /etc/nginx/nginx.conf') eq ''
-  end
+  only_if{ command('egrep -i "^\s*autoindex\s+" /etc/nginx/nginx.conf') == '' }
   
   describe parse_config(nginx_parsed_config, options) do
 	its('autoindex') { should eq 'off' }
