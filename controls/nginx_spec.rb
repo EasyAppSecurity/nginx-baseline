@@ -304,3 +304,15 @@ control 'cis_2_1_2' do
     its(:stdout) { should eq '' }
   end
 end
+
+control 'cis_2_1_3' do
+  impact 1.0
+  title 'Check modules with gzip functionality install'
+  desc 'Compression has been linked with the Breach attack and others. While the Breach attack has been mitigated with modern usages of the HTTP protocol, disabling the use of compression is considered a defense-in-depth strategy to mitigate other attacks. '
+  describe command('nginx -V 2>&1 | grep "http_gzip_module\|http_gzip_static_module"') do
+    its(:stdout) { should eq '' }
+  end
+end
+
+
+
