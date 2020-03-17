@@ -326,5 +326,15 @@ control 'cis_2_1_4' do
   end
 end
 
+control 'cis_2_2_2' do
+  impact 1.0
+  title 'Check Nginx Service account is locked'
+  desc 'As a defense-in-depth measure, the nginx user account should be locked to prevent logins and to prevent someone from switching users to nginx using the password. In general, there shouldn\'t be a need for anyone to have to su as nginx, and when there is a need, sudo should be used instead, which would not require the nginx account password. '
+  
+  describe command('passwd -S nginx') do
+    its(:stdout) { should match(/Password locked|nginx L/) }
+  end
+end
+
 
 
