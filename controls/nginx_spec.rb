@@ -320,7 +320,9 @@ control 'cis_2_1_4' do
   desc 'Automated directory listings may reveal information helpful to an attacker, such as naming conventions and directory paths. Directory listings may also reveal files that were not intended to be revealed.'
   
   only_if('autoindex option not found') do
-    command('egrep -i "^\s*autoindex\s+" /etc/nginx/nginx.conf').exist?
+    describe command('egrep -i "^\s*autoindex\s+" /etc/nginx/nginx.conf') do
+		its(:stdout) { should eq '' }
+	end
   end
   
   describe parse_config(nginx_parsed_config, options) do
