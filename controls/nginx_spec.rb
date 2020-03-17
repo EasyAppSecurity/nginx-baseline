@@ -300,7 +300,7 @@ control 'cis_2_1_2' do
   impact 1.0
   title 'Check for HTTP WebDAV module install'
   desc 'WebDAV functionality opens up an unnecessary path for exploiting your web server. Through misconfigurations of WebDAV operations, an attacker may be able to access and manipulate files on the server.'
-  describe command('nginx -V 2>&1 | grep http_dav_module_AAAA ') do
+  describe command('nginx -V 2>&1 | grep http_dav_module') do
     its(:stdout) { should eq '' }
   end
 end
