@@ -342,7 +342,7 @@ control 'cis-bench-2_2_3' do
   desc 'The account used for nginx should only be used for the nginx service and does not need to have the ability to log in. This prevents an attacker who compromises the account to log in with it. '
 
   describe command('grep nginx /etc/passwd'), :sensitive do
-      its(:stdout) { should include '/sbin/nologin/' }
+      its(:stdout) { should include '/sbin/nologin' }
   end
 end
 
