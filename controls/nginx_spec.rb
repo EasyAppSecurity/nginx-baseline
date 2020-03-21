@@ -296,7 +296,7 @@ control 'nginx-17' do
   end
 end
 
-control 'cis_2_1_2' do
+control 'cis-bench-2_1_2' do
   impact 1.0
   title 'Check for HTTP WebDAV module install'
   desc 'WebDAV functionality opens up an unnecessary path for exploiting your web server. Through misconfigurations of WebDAV operations, an attacker may be able to access and manipulate files on the server.'
@@ -305,7 +305,7 @@ control 'cis_2_1_2' do
   end
 end
 
-control 'cis_2_1_3' do
+control 'cis-bench-2_1_3' do
   impact 1.0
   title 'Check modules with gzip functionality install'
   desc 'Compression has been linked with the Breach attack and others. While the Breach attack has been mitigated with modern usages of the HTTP protocol, disabling the use of compression is considered a defense-in-depth strategy to mitigate other attacks. '
@@ -314,7 +314,7 @@ control 'cis_2_1_3' do
   end
 end
 
-control 'cis_2_1_4' do
+control 'cis-bench-2_1_4' do
   impact 1.0
   title 'Check autoindex module is disabled'
   desc 'Automated directory listings may reveal information helpful to an attacker, such as naming conventions and directory paths. Directory listings may also reveal files that were not intended to be revealed.'
@@ -326,15 +326,28 @@ control 'cis_2_1_4' do
   end
 end
 
-control 'cis_2_2_2' do
+control 'cis-bench-2_2_2' do
   impact 1.0
   title 'Check Nginx Service account is locked'
   desc 'As a defense-in-depth measure, the nginx user account should be locked to prevent logins and to prevent someone from switching users to nginx using the password. In general, there shouldn\'t be a need for anyone to have to su as nginx, and when there is a need, sudo should be used instead, which would not require the nginx account password. '
-  
+
   describe command('passwd -S nginx') do
     its(:stdout) { should match(/Password locked|nginx L/) }
   end
 end
+
+control 'cis-bench-2_2_3' do
+  impact 1.0
+  title 'Check NGINX service account has an invalid shell '
+  desc 'The account used for nginx should only be used for the nginx service and does not need to have the ability to log in. This prevents an attacker who compromises the account to log in with it. '
+
+  describe command('grep nginx /etc/passwd') do
+      its(:stdout) { should include '/sbin//nologin/' }
+  end
+end
+
+
+
 
 
 
