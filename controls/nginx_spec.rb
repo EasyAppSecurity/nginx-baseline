@@ -372,6 +372,15 @@ control 'cis-bench-2_3_2' do
    end
 end
 
+control 'cis-bench-2_3_3' do
+  impact 1.0
+  title 'Check NGINX process ID (PID) file is secured'
+  desc 'The PID file should be owned by root and the group root. It should also be readable to everyone, but only writable by root (permissions 644). This will prevent unauthorized modification of the PID file, which could cause a denial of service. '
+  describe file('/var/run/nginx.pid') do
+    its('mode') { should cmp '0644' }
+  end
+end
+
 
 
 
