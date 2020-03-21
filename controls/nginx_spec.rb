@@ -381,9 +381,17 @@ control 'cis-bench-2_3_3' do
   end
 end
 
+control 'cis-bench-2_3_4' do
+  impact 1.0
+  title 'Check  the core dump directory is secured'
+  desc 'Core dumps may contain sensitive information that should not be accessible by other accounts on the system. '
 
+  only_if{ command('grep working_directory /etc/nginx/nginx.conf').stdout != '' }
 
+  working_dir_option = parse_config(nginx_parsed_config, options).params['working_directory']
+  server_root_option = parse_config(nginx_parsed_config, options).params['server', 'root']
 
-
-
-
+  describe file(working_dir_option) do
+    its('link_path') { should_not include server_root_option }
+  end
+end
