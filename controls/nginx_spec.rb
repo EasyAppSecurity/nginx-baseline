@@ -346,6 +346,33 @@ control 'cis-bench-2_2_3' do
   end
 end
 
+control 'cis-bench-2_3_1' do
+  impact 1.0
+  title 'Check NGINX directories and files are owned by root'
+  desc 'Setting ownership to only those users in the root group and the root user will reduce the likelihood of unauthorized modifications to the nginx configuration files.'
+  describe file(nginx_path) do
+    it { should be_owned_by 'root' }
+  end
+end
+
+control 'cis-bench-2_3_2' do
+  impact 1.0
+  title 'Check access to NGINX directories and files is restricted'
+  desc 'This ensures that only users who need access to configuration files are able to view them, thus preventing unauthorized access. Other users will need to use sudo in order to access these files.'
+  describe file(nginx_path) do
+    its('mode') { should cmp '0750' }
+  end
+
+  describe file(nginx_confd) do
+     its('mode') { should cmp '0750' }
+  end
+
+   describe file(nginx_conf) do
+      its('mode') { should cmp '0640' }
+   end
+end
+
+
 
 
 
