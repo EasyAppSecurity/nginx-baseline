@@ -391,8 +391,8 @@ control 'cis-bench-2_3_4' do
   working_dir_option = parse_config(nginx_parsed_config, options).value(['working_directory'])
   server_root_option = parse_config(nginx_parsed_config, options).value(['server', 'root'])
 
-
   describe file(working_dir_option) do
-    its('link_path') { should_not include server_root_option }
+    its('link_path') { should eq '/path/to/cores' }
+    its('link_path') { should_not include '/etc/nginx' }
   end
 end
