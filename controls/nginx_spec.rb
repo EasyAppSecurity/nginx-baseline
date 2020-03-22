@@ -389,9 +389,9 @@ control 'cis-bench-2_3_4' do
   only_if{ command('grep working_directory /etc/nginx/nginx.conf').stdout != '' }
 
   working_dir_option = parse_config(nginx_parsed_config, options).params['working_directory']
-  server_root_option = parse_config(nginx_parsed_config).params['root']
+  server_root_option = parse_config(nginx_parsed_config, options).params['server', 'root']
 
   describe file(working_dir_option) do
-    its('path') { should eq working_dir_option }
+    its('path') { should eq server_root_option }
   end
 end
