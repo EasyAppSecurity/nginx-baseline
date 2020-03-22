@@ -392,6 +392,6 @@ control 'cis-bench-2_3_4' do
   server_root_option = parse_config(nginx_parsed_config).params(['root'])
 
   describe file(working_dir_option) do
-    its('link_path') { should eq '/path/to/cores' }
+    its('path') { should eq '/path/to/cores' }
   end
 end
