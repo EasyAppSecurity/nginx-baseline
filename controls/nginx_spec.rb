@@ -395,7 +395,6 @@ control 'cis-bench-2_3_4' do
     its('path') { should_not include server_root_option }
 
     it { should be_owned_by 'root' }
-    its('group') { should_not eq 'root' }
 
     it { should_not be_readable.by('others') }
     it { should_not be_writable.by('others') }
