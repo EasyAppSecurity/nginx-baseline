@@ -407,9 +407,9 @@ control 'cis-bench-2_4_1' do
   title 'Check NGINX only listens for network connections on authorized ports'
   desc 'Limiting the listening ports to only those that are authorized helps to ensure no unauthorized services are running through the use of nginx.'
   command('grep -hir listen /etc/nginx').stdout.split.each do |listen_option|
-      next if listen_option.strip.start_with?("#")?
+      next if listen_option.strip.start_with?("#")
 
-      describe command('echo #{listen_option}') do
+      describe command("echo #{listen_option}") do
         its(:stdout) { should match '^.+(\s|:)(80\s|443\s).+$' }
       end
 
