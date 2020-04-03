@@ -410,7 +410,7 @@ control 'cis-bench-2_4_1' do
       next if listen_option.strip.start_with?("#")
 
       describe command("echo #{listen_option}") do
-        its(:stdout) { should match '^.+(\s|:)(80|443)(\s|;).+$' }
+        its(:stdout) { should match '^.+(\s|:)(80|443)(\s|;).*$' }
       end
 
   end
