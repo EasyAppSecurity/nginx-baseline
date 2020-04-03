@@ -383,7 +383,7 @@ end
 
 control 'cis-bench-2_3_4' do
   impact 1.0
-  title 'Check  the core dump directory is secured'
+  title 'Check the core dump directory is secured'
   desc 'Core dumps may contain sensitive information that should not be accessible by other accounts on the system. '
 
   only_if{ command('grep working_directory /etc/nginx/nginx.conf').stdout != '' }
@@ -399,5 +399,19 @@ control 'cis-bench-2_3_4' do
     it { should_not be_readable.by('others') }
     it { should_not be_writable.by('others') }
     it { should_not be_executable.by('others') }
+  end
+end
+
+control 'cis-bench-2_4_1' do
+  impact 1.0
+  title 'Check NGINX only listens for network connections on authorized ports'
+  desc 'Limiting the listening ports to only those that are authorized helps to ensure no unauthorized services are running through the use of nginx.'
+  command('grep -hir listen /etc/nginx').stdout.split.each do |listen_option|
+      next if listen_option.strip.start_with?("#")?
+
+      describe listen_option do
+        it { should match '^.+(\s|:)(80\s|443\s).+$' }
+      end
+
   end
 end
