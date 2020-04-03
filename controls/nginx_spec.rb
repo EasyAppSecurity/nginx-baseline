@@ -427,3 +427,17 @@ control 'cis-bench-2_4_2' do
 
 end
 
+control 'cis-bench-2_5_2' do
+  impact 0.5
+  title 'Check default error and index.html pages do not reference NGINX '
+  desc 'By gathering information about the server, attackers can target attacks against its known vulnerabilities. Removing pages that disclose the server runs NGINX helps reduce targeted attacks on the server'
+
+   describe command('grep -i nginx /usr/share/nginx/html/index.html') do
+     its(:stdout) { should be_empty }
+   end
+
+   describe command('grep -i nginx /usr/share/nginx/html/50x.html') do
+     its(:stdout) { should be_empty }
+   end
+end
+
