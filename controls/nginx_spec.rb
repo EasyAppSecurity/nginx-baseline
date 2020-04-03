@@ -451,3 +451,13 @@ control 'cis-bench-2_5_3' do
   end
 end
 
+control 'cis-bench-2_5_4' do
+  impact 1.0
+  title 'Check NGINX reverse proxy does not enable information disclosure'
+  desc 'Attackers can conduct reconnaissance on a website using these response headers, then target attacks for specific known vulnerabilities associated with the underlying technologies. Removing these headers will reduce the likelihood of targeted attacks.'
+
+  describe command('grep proxy_hide_header /etc/nginx/nginx.conf') do
+      its(:stdout) { should include(' X-Powered-By').and include('Server') }
+  end
+end
+
