@@ -441,3 +441,13 @@ control 'cis-bench-2_5_2' do
    end
 end
 
+control 'cis-bench-2_5_3' do
+  impact 1.0
+  title 'Check hidden file serving is disabled'
+  desc 'Disabling hidden files prevents an attacker from being able to reference a hidden file that may be put in your location and have sensitive information, like .git files'
+
+  describe command('grep location /etc/nginx/nginx.conf') do
+      its(:stdout) { should include('deny all').and include('return 404') }
+  end
+end
+
