@@ -409,7 +409,7 @@ control 'cis-bench-2_4_1' do
   command('grep -hir listen /etc/nginx').stdout.split.each do |listen_option|
       next if listen_option.strip.start_with?("#")?
 
-      describe command("echo #{listen_option}") do
+      describe command('echo #{listen_option}') do
         its(:stdout) { should match '^.+(\s|:)(80\s|443\s).+$' }
       end
 
