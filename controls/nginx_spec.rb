@@ -511,7 +511,7 @@ control 'cis-bench-3_4' do
    logrotate_content = command("cat #{nginx_logrotate_conf}").stdout
 
    describe parse_config(logrotate_content, options) do
-     its('rotate') { should_not be_nil.and be >= 10 }
+     its('rotate') { should be >= 10 }
    end
 
 end
