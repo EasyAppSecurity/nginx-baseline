@@ -443,7 +443,7 @@ control 'cis-bench-2_5_2' do
   disclose_files = ['index.html', '50x.html']
 
   disclose_files.each do |disclose_file|
-    describe command("grep -i nginx /usr/share/nginx/html/#{disclose_file}") do
+    describe command("grep -i nginx /usr/share/nginx/html/#{disclose_file}"), :sensitive do
         its(:stdout) { should be_empty }
     end
    end
