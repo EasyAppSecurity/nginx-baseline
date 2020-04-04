@@ -508,10 +508,8 @@ control 'cis-bench-3_4' do
   title 'Check log files are rotated '
   desc 'Log files are important to track activity that occurs on your server, but they take up significant amounts of space. Log rotation should be configured in order to ensure the logs do not consume so much disk space that logging becomes unavailable.'
 
-   logrotate_content = command("cat #{nginx_logrotate_conf}").stdout
-
-   describe parse_config(logrotate_content, options) do
-     its('rotate') { should be >= 10 }
+   describe command("cat #{nginx_logrotate_conf} | grep ' rotate '") do
+      its(:stdout) { should_not be_nil }
    end
 
 end
