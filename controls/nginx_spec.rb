@@ -477,3 +477,15 @@ control 'cis-bench-3_1' do
   end
 end
 
+control 'cis-bench-3_2' do
+  impact 1.0
+  title 'Check access logging is enabled'
+  desc 'Access logging allows incident responders and auditors to investigate access to a system in the event of an incident.'
+  command('grep -hir access_log /etc/nginx').stdout.split("\n").each do |access_log_option|
+
+      describe command("echo #{access_log_option.strip}") do
+        its(:stdout) { should_not match('^.+\soff\s.*$').and start_with("#") }
+      end
+  end
+end
+
