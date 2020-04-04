@@ -473,7 +473,7 @@ control 'cis-bench-3_1' do
   desc 'Performing detailed logging ensures that incident responders, auditors, and others are able to clearly view the activity that has occurred on your server.'
 
   describe parse_config(nginx_parsed_config, options) do
- 	its('log_format') { should_not be_empty }
+ 	its('log_format') { should_not be_nil.and be_empty }
   end
 end
 
@@ -484,7 +484,7 @@ control 'cis-bench-3_2' do
   command('grep -hir access_log /etc/nginx').stdout.split("\n").each do |access_log_option|
 
       describe command("echo #{access_log_option.strip}") do
-        its(:stdout) { should_not match('^.+\soff\s.*$').and start_with("#") }
+        its(:stdout) { should_not match('(#.+|^.+\soff\s.*$)') }
       end
   end
 end
