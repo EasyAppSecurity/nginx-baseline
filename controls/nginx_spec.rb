@@ -509,7 +509,7 @@ control 'cis-bench-3_4' do
   desc 'Log files are important to track activity that occurs on your server, but they take up significant amounts of space. Log rotation should be configured in order to ensure the logs do not consume so much disk space that logging becomes unavailable.'
 
    describe command("cat #{nginx_logrotate_conf} | grep ' rotate '") do
-      its(:stdout) { should_not be_nil }
+      its(:stdout) { should_not be_empty }
    end
 
 end
