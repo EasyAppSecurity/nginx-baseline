@@ -473,7 +473,7 @@ control 'cis-bench-3_1' do
   desc 'Performing detailed logging ensures that incident responders, auditors, and others are able to clearly view the activity that has occurred on your server.'
 
   describe parse_config(nginx_parsed_config, options) do
- 	its('log_format') { should_not be_nil.and be_empty }
+ 	its('log_format') { should_not be_nil }
   end
 end
 
@@ -487,6 +487,16 @@ control 'cis-bench-3_2' do
       describe command("echo #{access_log_option.strip}") do
         its(:stdout) { should_not match('(^.+\soff\s.*$)') }
       end
+  end
+end
+
+control 'cis-bench-3_3' do
+  impact 1.0
+  title 'Check error logging is enabled and set to the info logging level'
+  desc 'Error logging can be useful in identifying an attacker attempting to exploit a system and recreating an attackers steps. Error logging also helps with identifying possible issues with an application'
+
+  describe parse_config(nginx_parsed_config, options) do
+  	its('error_log') { should_not be_nil }
   end
 end
 
