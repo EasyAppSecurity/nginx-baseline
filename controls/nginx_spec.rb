@@ -99,6 +99,9 @@ nginx_confd         = File.join(nginx_path, 'conf.d')
 nginx_enabled       = File.join(nginx_path, 'sites-enabled')
 nginx_parsed_config = command('nginx -T').stdout
 
+logrotate_path = '/etc/logrotate.d'
+nginx_logrotate_conf = File.join(logrotate_path, 'nginx')
+
 options = {
   assignment_regex: /^\s*([^:]*?)\s*\ \s*(.*?)\s*;$/
 }
@@ -498,5 +501,18 @@ control 'cis-bench-3_3' do
   describe parse_config(nginx_parsed_config, options) do
   	its('error_log') { should_not be_nil }
   end
+end
+
+control 'cis-bench-3_4' do
+  impact 1.0
+  title 'Check log files are rotated '
+  desc 'Log files are important to track activity that occurs on your server, but they take up significant amounts of space. Log rotation should be configured in order to ensure the logs do not consume so much disk space that logging becomes unavailable.'
+
+   logrotate_content = command("cat #{nginx_logrotate_conf}").stdout
+
+   describe parse_config(logrotate_content, options) do
+     its('rotate') { should_not be_nil.and be >= 10 }
+   end
+
 end
 
