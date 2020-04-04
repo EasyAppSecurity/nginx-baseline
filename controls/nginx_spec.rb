@@ -518,3 +518,13 @@ control 'cis-bench-3_4' do
 
 end
 
+control 'cis-bench-3_5' do
+  impact 1.0
+  title 'Check error logs are sent to a remote syslog server'
+  desc 'A centralized logging solution aggregates logs from multiple systems to ensure logs can be referenced in the event systems are thought to be compromised. Centralized log servers are also often used to correlate logs for potential patterns of attack. If a centralized logging solution is not used and systems (and their logs) are believed to be compromised, then logs may not be permitted to be used as evidence.'
+
+  describe command("grep -hir syslog #{nginx_path}") do
+    its(:stdout) { should_not be_empty }
+  end
+end
+
