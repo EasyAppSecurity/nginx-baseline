@@ -17,6 +17,7 @@
 # author: Christoph Hartmann
 # author: Dominik Richter
 # author: Patrick Muench
+# author: Mikhail Rusakovich
 
 title 'NGINX server config'
 
@@ -436,13 +437,14 @@ control 'cis-bench-2_5_2' do
   title 'Check default error and index.html pages do not reference NGINX '
   desc 'By gathering information about the server, attackers can target attacks against its known vulnerabilities. Removing pages that disclose the server runs NGINX helps reduce targeted attacks on the server'
 
-   describe command('grep -i nginx /usr/share/nginx/html/index.html') do
-     its(:stdout) { should be_empty }
+  disclose_files = ['index.html', '50x.html']
+
+  disclose_files.each do |disclose_file|
+    describe command("grep -i nginx /usr/share/nginx/html/#{disclose_file}") do
+        its(:stdout) { should be_empty }
+    end
    end
 
-   describe command('grep -i nginx /usr/share/nginx/html/50x.html') do
-     its(:stdout) { should be_empty }
-   end
 end
 
 control 'cis-bench-2_5_3' do
