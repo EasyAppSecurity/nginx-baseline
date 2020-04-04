@@ -528,3 +528,17 @@ control 'cis-bench-3_5' do
   end
 end
 
+control 'cis-bench-3_7' do
+  impact 1.0
+  title 'Check proxies pass source IP information '
+  desc 'Being able to identify the originating client IP address can help auditors or incident responders identify where the corresponding user came from. This may be useful in the event of an attack to analyze if the IP address is a good candidate for blocking. It may also be useful to correlate an attackers actions.'
+
+  describe command("grep proxy_set_header #{nginx_conf}") do
+      its(:stdout) { should include('X-Real-IP').and include('X-Forwarded-For') }
+  end
+
+  describe command("grep proxy_pass #{nginx_conf}") do
+      its(:stdout) { should_not be_empty }
+  end
+end
+
