@@ -99,7 +99,11 @@ nginx_confd         = File.join(nginx_path, 'conf.d')
 nginx_enabled       = File.join(nginx_path, 'sites-enabled')
 nginx_parsed_config = command('nginx -T').stdout
 
-logrotate_path = '/etc/logrotate.d'
+nginx_static_path   = '/usr/share/nginx/html'
+
+nginx_pid           = '/var/run/nginx.pid'
+
+logrotate_path      = '/etc/logrotate.d'
 nginx_logrotate_conf = File.join(logrotate_path, 'nginx')
 
 options = {
@@ -323,7 +327,7 @@ control 'cis-bench-2_1_4' do
   title 'Check autoindex module is disabled'
   desc 'Automated directory listings may reveal information helpful to an attacker, such as naming conventions and directory paths. Directory listings may also reveal files that were not intended to be revealed.'
   
-  only_if{ command('egrep -i "^\s*autoindex\s+" /etc/nginx/nginx.conf').stdout != '' }
+  only_if{ command("egrep -i '^\s*autoindex\s+' #{nginx_conf}").stdout != '' }
   
   describe parse_config(nginx_parsed_config, options) do
 	its('autoindex') { should eq 'off' }
@@ -380,7 +384,7 @@ control 'cis-bench-2_3_3' do
   impact 1.0
   title 'Check NGINX process ID (PID) file is secured'
   desc 'The PID file should be owned by root and the group root. It should also be readable to everyone, but only writable by root (permissions 644). This will prevent unauthorized modification of the PID file, which could cause a denial of service. '
-  describe file('/var/run/nginx.pid') do
+  describe file("#{nginx_pid}") do
     its('mode') { should cmp '0644' }
   end
 end
@@ -390,7 +394,7 @@ control 'cis-bench-2_3_4' do
   title 'Check the core dump directory is secured'
   desc 'Core dumps may contain sensitive information that should not be accessible by other accounts on the system. '
 
-  only_if{ command('grep working_directory /etc/nginx/nginx.conf').stdout != '' }
+  only_if{ command("grep working_directory #{nginx_conf}").stdout != '' }
 
   working_dir_option = parse_config(nginx_parsed_config, options).params['working_directory']
   server_root_option = parse_config(nginx_parsed_config, options).params['root']
@@ -410,7 +414,7 @@ control 'cis-bench-2_4_1' do
   impact 1.0
   title 'Check NGINX only listens for network connections on authorized ports'
   desc 'Limiting the listening ports to only those that are authorized helps to ensure no unauthorized services are running through the use of nginx.'
-  command('grep -hir listen /etc/nginx').stdout.split("\n").each do |listen_option|
+  command("grep -hir listen #{nginx_path}").stdout.split("\n").each do |listen_option|
       next if listen_option.strip.start_with?("#")
 
       describe command("echo #{listen_option}") do
@@ -443,7 +447,7 @@ control 'cis-bench-2_5_2' do
   disclose_files = ['index.html', '50x.html']
 
   disclose_files.each do |disclose_file|
-    describe command("grep -i nginx /usr/share/nginx/html/#{disclose_file}"), :sensitive do
+    describe command("grep -i nginx #{nginx_static_path}/#{disclose_file}"), :sensitive do
         its(:stdout) { should be_empty }
     end
    end
@@ -455,7 +459,7 @@ control 'cis-bench-2_5_3' do
   title 'Check hidden file serving is disabled'
   desc 'Disabling hidden files prevents an attacker from being able to reference a hidden file that may be put in your location and have sensitive information, like .git files'
 
-  describe command('grep location /etc/nginx/nginx.conf') do
+  describe command("grep location #{nginx_conf}") do
       its(:stdout) { should include('deny all').and include('return 404') }
   end
 end
@@ -465,7 +469,7 @@ control 'cis-bench-2_5_4' do
   title 'Check NGINX reverse proxy does not enable information disclosure'
   desc 'Attackers can conduct reconnaissance on a website using these response headers, then target attacks for specific known vulnerabilities associated with the underlying technologies. Removing these headers will reduce the likelihood of targeted attacks.'
 
-  describe command('grep proxy_hide_header /etc/nginx/nginx.conf') do
+  describe command("grep proxy_hide_header #{nginx_conf}") do
       its(:stdout) { should include('X-Powered-By').and include('Server') }
   end
 end
@@ -484,7 +488,7 @@ control 'cis-bench-3_2' do
   impact 1.0
   title 'Check access logging is enabled'
   desc 'Access logging allows incident responders and auditors to investigate access to a system in the event of an incident.'
-  command('grep -hir access_log /etc/nginx').stdout.split("\n").each do |access_log_option|
+  command("grep -hir access_log #{nginx_path}").stdout.split("\n").each do |access_log_option|
       next if access_log_option.strip.start_with?("#")
 
       describe command("echo #{access_log_option.strip}") do
