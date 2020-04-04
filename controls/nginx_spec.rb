@@ -461,3 +461,13 @@ control 'cis-bench-2_5_4' do
   end
 end
 
+control 'cis-bench-3_1' do
+  impact 0.5
+  title 'Check detailed logging is enabled'
+  desc 'Performing detailed logging ensures that incident responders, auditors, and others are able to clearly view the activity that has occurred on your server.'
+
+  describe parse_config(nginx_parsed_config, options) do
+ 	its('log_format') { should_not be_empty }
+  end
+end
+
