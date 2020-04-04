@@ -424,7 +424,7 @@ control 'cis-bench-2_4_2' do
   protocols = ['http', 'https']
 
   protocols.each do |protocol|
-      describe http('#{protocol}://127.0.0.1', headers: {'Host' => 'invalid.host.com'}) do
+      describe http("#{protocol}://127.0.0.1", headers: {'Host' => 'invalid.host.com'}) do
         its('status') { should cmp 404 }
       end
    end
