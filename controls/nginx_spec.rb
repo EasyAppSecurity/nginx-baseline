@@ -509,7 +509,7 @@ end
 
 control 'cis-bench-3_4' do
   impact 1.0
-  title 'Check log files are rotated '
+  title 'Check log files are rotated'
   desc 'Log files are important to track activity that occurs on your server, but they take up significant amounts of space. Log rotation should be configured in order to ensure the logs do not consume so much disk space that logging becomes unavailable.'
 
    describe command("cat #{nginx_logrotate_conf} | grep ' rotate '") do
@@ -539,6 +539,16 @@ control 'cis-bench-3_7' do
 
   describe command("grep proxy_pass #{nginx_conf}") do
       its(:stdout) { should_not be_empty }
+  end
+end
+
+control 'cis-bench-4_1' do
+  impact 1.0
+  title 'Check HTTP is redirected to HTTPS'
+  desc 'Redirecting user agent traffic to HTTPS helps to ensure all user traffic is encrypted. Modern browsers alert users that your website is insecure when HTTPS is not used. This can decrease user trust in your website and ultimately result in decreased use of your web services. Redirection from HTTP to HTTPS couples security with usability; users are able to access your website even if they lack the security awareness to use HTTPS over HTTP when requesting your website.'
+
+  describe command("grep -hir 'return +301 +https://' #{nginx_path}") do
+    its(:stdout) { should_not be_empty }
   end
 end
 
