@@ -574,5 +574,22 @@ control 'cis-bench-4_1_3' do
    end
 end
 
+control 'cis-bench-4_1_4' do
+  impact 1.0
+  title 'Check only modern TLS protocols are used'
+  desc 'Only modern TLS protocols should be enabled in NGINX for all client connections and upstream connections. Removing legacy TLS and SSL protocols (SSL 3.0, TLS 1.0 and 1.1), and enabling emerging and stable TLS protocols (TLS 1.2), ensures users are able to take advantage of strong security capabilities and protects them from insecure legacy protocols'
+
+   describe.one do
+     describe parse_config(nginx_parsed_config, options) do
+     	its('ssl_protocols') { should eq 'TLSv1.2' }
+     end
+
+     describe parse_config(nginx_parsed_config, options) do
+        its('proxy_pass') { should_not be_nil }
+        its('proxy_ssl_protocols') { should eq 'TLSv1.2' }
+     end
+   end
+end
+
 
 
