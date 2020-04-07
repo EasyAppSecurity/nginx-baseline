@@ -567,6 +567,8 @@ control 'cis-bench-4_1_3' do
     next if ssl_key_path.nil? || ssl_key_path.empty?
 
       describe file(ssl_key_path), :sensitive do
+          it { should exist }
+          it { should be_file }
           its('mode') { should cmp '0400' }
       end
    end
