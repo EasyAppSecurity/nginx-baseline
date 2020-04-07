@@ -563,7 +563,7 @@ control 'cis-bench-4_1_3' do
   desc 'A servers private key file should be restricted to 400 permissions. This ensures only the owner of the private key file can access it. This is the minimum necessary permissions for the server to operate. If the private key file is not protected, an unauthorized user with access to the server may be able to find the private key file and use it to decrypt traffic sent to your server.'
 
   command("grep -irl ssl_certificate_key #{nginx_path}").stdout.split("\n").each do |ssl_key_option_config_path|
-    ssl_key_path = parse_config(ssl_key_option_config_path, options).params['ssl_certificate_key']
+    ssl_key_path = parse_config_file(ssl_key_option_config_path, options).params['ssl_certificate_key']
     next if ssl_key_path.nil? || ssl_key_path.empty?
 
       describe file(ssl_key_path), :sensitive do
