@@ -563,7 +563,7 @@ control 'cis-bench-4_1_2' do
 
   describe.one do
       command("grep -hir 'ssl_certificate\s' #{nginx_path}").stdout.split("\n").each do |ssl_certificate_option|
-         describe "echo '#{ssl_certificate_option.strip}'") do
+         describe command("echo '#{ssl_certificate_option.strip}'") do
             its(:stdout) { should_not start_with("#") }
          end
       end
