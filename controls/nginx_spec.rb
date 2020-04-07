@@ -232,19 +232,6 @@ control 'nginx-10' do
   end
 end
 
-control 'nginx-12' do
-  impact 1.0
-  title 'TLS Protocols'
-  desc 'When choosing a cipher during an SSLv3 or TLSv1 handshake, normally the client\'s preference is used. If this directive is enabled, the server\'s preference will be used instead.'
-  ref 'SSL Hardening config', url: 'https://mozilla.github.io/server-side-tls/ssl-config-generator/'
-  describe parse_config(nginx_parsed_config, options) do
-    its('ssl_protocols') { should eq 'TLSv1.2' }
-    its('ssl_session_tickets') { should eq 'off' }
-    its('ssl_ciphers') { should eq '\'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256\'' }
-    its('ssl_prefer_server_ciphers') { should eq 'on' }
-    its('ssl_dhparam') { should eq '/etc/nginx/dh2048.pem' }
-  end
-end
 
 control 'nginx-13' do
   impact 1.0
@@ -569,4 +556,21 @@ control 'cis-bench-4_1_2' do
       end
   end
 end
+
+control 'cis-bench-4_1_3' do
+  impact 1.0
+  title 'Check private key permissions are restricted'
+  desc 'A servers private key file should be restricted to 400 permissions. This ensures only the owner of the private key file can access it. This is the minimum necessary permissions for the server to operate. If the private key file is not protected, an unauthorized user with access to the server may be able to find the private key file and use it to decrypt traffic sent to your server.'
+
+  command("grep -irl ssl_certificate_key #{nginx_path}").stdout.split("\n").each do |ssl_key_option_config_path|
+    ssl_key_path = parse_config(ssl_key_option_config_path, options).params['ssl_certificate_key']
+    next if ssl_key_path.nil? || ssl_key_path.empty?
+
+      describe file(ssl_key_path), :sensitive do
+          its('mode') { should cmp '0400' }
+      end
+   end
+end
+
+
 
