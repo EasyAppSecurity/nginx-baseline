@@ -552,3 +552,13 @@ control 'cis-bench-4_1' do
   end
 end
 
+control 'cis-bench-4_1_2' do
+  impact 1.0
+  title 'Check a trusted certificate and trust chain is installed'
+  desc 'Without a certificate and full trust chain installed on your web server, modern browsers will flag your web server as untrusted.'
+
+  describe command("grep -ir ssl_certificate #{nginx_path}") do
+    its(:stdout) { should_not be_empty }
+  end
+end
+
