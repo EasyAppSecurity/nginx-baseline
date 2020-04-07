@@ -564,6 +564,7 @@ control 'cis-bench-4_1_3' do
 
   command("grep -irl ssl_certificate_key #{nginx_path}").stdout.split("\n").each do |ssl_key_option_config_path|
     ssl_key_path = parse_config_file(ssl_key_option_config_path, options).params['ssl_certificate_key']
+    next if ssl_key_path.nil? || ssl_key_path.empty?
 
       describe file(ssl_key_path), :sensitive do
           it { should exist }
