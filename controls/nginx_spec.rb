@@ -625,5 +625,15 @@ control 'cis-bench-4_1_5' do
 
 end
 
+control 'cis-bench-4_1_6' do
+  impact 1.0
+  title 'Check custom Diffie-Hellman parameters are used'
+  desc 'Custom Diffie-Hellman (DH) key exchange parameters should be used. DH Ephemeral (DHE) parameters with at least 2048 bits should be generated.'
+
+  describe parse_config(nginx_parsed_config, options) do
+ 	its('ssl_dhparam') { should_not be_nil }
+  end
+end
+
 
 
