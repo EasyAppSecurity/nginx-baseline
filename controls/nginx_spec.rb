@@ -656,4 +656,14 @@ control 'cis-bench-4_1_9' do
   end
 end
 
+control 'cis-bench-4_1_10' do
+  impact 0.5
+  title 'Check upstream server traffic is authenticated with a client certificate'
+  desc 'Using client certificate validation allows you to establish a trusted proxy server'
+
+  describe command("grep -hir proxy_ssl_certificate #{nginx_path}") do
+    its(:stdout) { should_not be_empty }
+  end
+end
+
 
