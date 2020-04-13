@@ -581,14 +581,48 @@ control 'cis-bench-4_1_4' do
 
    describe.one do
      describe parse_config(nginx_parsed_config, options) do
-     	its('ssl_protocols') { should eq 'TLSv1.2' }
+     	its('ssl_protocols') { should match '^(?:\s*TLSv1\.2()\s*|\s*TLSv1\.3()\s*){1,}(\1|\2)$' }
      end
 
      describe parse_config(nginx_parsed_config, options) do
         its('proxy_pass') { should_not be_nil }
-        its('proxy_ssl_protocols') { should eq 'TLSv1.2' }
+        its('proxy_ssl_protocols') { should match '^(?:\s*TLSv1\.2()\s*|\s*TLSv1\.3()\s*){1,}(\1|\2)$' }
      end
    end
+end
+
+control 'cis-bench-4_1_5' do
+  impact 1.0
+  title 'Check weak ciphers disabled'
+  desc 'When choosing a cipher during an SSLv3 or TLSv1 handshake, normally the client\'s preference is used. If this directive is enabled, the server\'s preference will be used instead.'
+  ref 'SSL Hardening config', url: 'https://mozilla.github.io/server-side-tls/ssl-config-generator/'
+
+  describe.one do
+     # Modern configuration for web server
+     describe parse_config(nginx_parsed_config, options) do
+        its('ssl_protocols') { should eq 'TLSv1.3' }
+        its('ssl_session_tickets') { should eq 'off' }
+        its('ssl_ciphers') { should be_nil }
+        its('ssl_prefer_server_ciphers') { should eq 'off' }
+        its('ssl_dhparam') { should be_nil }
+      end
+
+     # Intermediate configuration
+     describe parse_config(nginx_parsed_config, options) do
+        its('ssl_protocols') { should match '^(?:\s*TLSv1\.2()\s*|\s*TLSv1\.3()\s*){1,}(\1|\2)$' }
+        its('ssl_session_tickets') { should eq 'off' }
+        its('ssl_ciphers') { should eq 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384' }
+        its('ssl_prefer_server_ciphers') { should eq 'off' }
+        its('ssl_dhparam') { should_not be_nil }
+      end
+
+     # Proxy server configuration
+     describe parse_config(nginx_parsed_config, options) do
+        its('proxy_pass') { should_not be_nil }
+        its('proxy_ssl_ciphers') { should eq('ALL:!EXP:!NULL:!ADH:!LOW:!SSLv2:!SSLv3:!MD5:!RC4').or eq('HIGH:!aNULL:!CAMELLIA:!SHA:!RSA') }
+     end
+  end
+
 end
 
 
