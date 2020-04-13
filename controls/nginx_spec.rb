@@ -646,4 +646,14 @@ control 'cis-bench-4_1_8' do
   end
 end
 
+control 'cis-bench-4_1_9' do
+  impact 0.5
+  title 'Check HTTP Public Key Pinning is enabled'
+  desc 'HTTP Public Key Pinning assists in preventing a user agent from falling victim to a forged certificate, such as man in the middle attacks.'
+
+  describe command("grep -hir Public-Key-Pins #{nginx_path}") do
+    its(:stdout) { should_not be_empty }
+  end
+end
+
 
