@@ -666,4 +666,18 @@ control 'cis-bench-4_1_10' do
   end
 end
 
+control 'cis-bench-4_1_11' do
+  impact 0.5
+  title 'Check the upstream traffic server certificate is trusted'
+  desc 'Configuring NGINX to validate the identity of the upstream server helps mitigate the risk of a man in the middle attack occurring against your server'
+
+  describe command("grep -hir proxy_ssl_trusted_certificate #{nginx_path}") do
+    its(:stdout) { should_not be_empty }
+  end
+
+  describe command("grep -hir proxy_ssl_verify #{nginx_path}") do
+    its(:stdout) { should_not be_empty }
+  end
+end
+
 
