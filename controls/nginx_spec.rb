@@ -635,5 +635,16 @@ control 'cis-bench-4_1_6' do
   end
 end
 
+control 'cis-bench-4_1_7' do
+  impact 1.0
+  title 'Check online Certificate Status Protocol (OCSP) stapling is enabled'
+  desc 'OCSP stapling protects your users from accessing a website where a private key is believed to be compromised. If a private key is compromised, an attacker may be able to obtain unauthorized access to the encrypted data transmitted by a user.'
+
+  describe parse_config(nginx_parsed_config, options) do
+ 	its('ssl_stapling') { should eq 'on' }
+ 	its('ssl_stapling_verify') { should eq 'on' }
+  end
+end
+
 
 
