@@ -233,15 +233,6 @@ control 'nginx-10' do
 end
 
 
-control 'nginx-13' do
-  impact 1.0
-  title 'Add HSTS Header'
-  desc 'HTTP Strict Transport Security (HSTS) is a web security policy mechanism which helps to protect websites against protocol downgrade attacks and cookie hijacking. It allows web servers to declare that web browsers (or other complying user agents) should only interact with it using secure HTTPS connections, and never via the insecure HTTP protocol. HSTS is an IETF standards track protocol and is specified in RFC 6797.'
-  describe parse_config(nginx_parsed_config, options_add_header) do
-    its('add_header') { should include 'Strict-Transport-Security max-age=15768000' }
-  end
-end
-
 control 'nginx-14' do
   impact 1.0
   title 'Disable insecure HTTP-methods'
@@ -646,5 +637,13 @@ control 'cis-bench-4_1_7' do
   end
 end
 
+control 'cis-bench-4_1_8' do
+  impact 1.0
+  title 'Check HSTS Header'
+  desc 'HTTP Strict Transport Security (HSTS) is a web security policy mechanism which helps to protect websites against protocol downgrade attacks and cookie hijacking. It allows web servers to declare that web browsers (or other complying user agents) should only interact with it using secure HTTPS connections, and never via the insecure HTTP protocol. HSTS is an IETF standards track protocol and is specified in RFC 6797.'
+  describe parse_config(nginx_parsed_config, options_add_header) do
+    its('add_header') { should include 'Strict-Transport-Security max-age=15768000' }
+  end
+end
 
 
