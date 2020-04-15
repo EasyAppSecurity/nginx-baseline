@@ -680,4 +680,13 @@ control 'cis-bench-4_1_11' do
   end
 end
 
+control 'cis-bench-4_1_12' do
+  impact 1.0
+  title 'Check domain is preloaded'
+  desc 'Preloading your domain helps prevent HTTP downgrade attacks and increases trust.'
+  describe parse_config(nginx_parsed_config, options_add_header) do
+    its('add_header') { should include('includeSubDomains').and include('preload"') }
+  end
+end
+
 
