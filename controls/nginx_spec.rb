@@ -589,7 +589,7 @@ control 'cis-bench-4_1_5' do
   ref 'SSL Hardening config', url: 'https://mozilla.github.io/server-side-tls/ssl-config-generator/'
 
   describe.one do
-     # Modern configuration for web server
+     # Modern configuration for web server (Web server profile)
      describe parse_config(nginx_parsed_config, options) do
         its('ssl_protocols') { should eq 'TLSv1.3' }
         its('ssl_session_tickets') { should eq 'off' }
@@ -598,7 +598,7 @@ control 'cis-bench-4_1_5' do
         its('ssl_dhparam') { should be_nil }
       end
 
-     # Intermediate configuration
+     # Intermediate configuration for web server (Web server profile)
      describe parse_config(nginx_parsed_config, options) do
         its('ssl_protocols') { should match '^(?:\s*TLSv1\.2()\s*|\s*TLSv1\.3()\s*){1,}(\1|\2)$' }
         its('ssl_session_tickets') { should eq 'off' }
@@ -607,7 +607,7 @@ control 'cis-bench-4_1_5' do
         its('ssl_dhparam') { should_not be_nil }
       end
 
-     # Proxy server configuration
+     # Proxy server configuration (Proxy or LoadBalancer profile)
      describe parse_config(nginx_parsed_config, options) do
         its('proxy_pass') { should_not be_nil }
         its('proxy_ssl_ciphers') { should eq('ALL:!EXP:!NULL:!ADH:!LOW:!SSLv2:!SSLv3:!MD5:!RC4').or eq('HIGH:!aNULL:!CAMELLIA:!SHA:!RSA') }
@@ -686,6 +686,27 @@ control 'cis-bench-4_1_12' do
   desc 'Preloading your domain helps prevent HTTP downgrade attacks and increases trust.'
   describe parse_config(nginx_parsed_config, options_add_header) do
     its('add_header') { should include('includeSubDomains').and include('preload"') }
+  end
+end
+
+control 'cis-bench-4_1_13' do
+  impact 1.0
+  title 'Check session resumption is disabled to enable perfect forward security'
+  desc 'Session resumption for HTTPS sessions should be disabled so perfect forward secrecy can be achieved.'
+
+   describe command("grep -ir 'ssl_session_tickets\s' #{nginx_path}") do
+     its(:stdout) { should_not be_empty }
+   end
+
+  describe.one do
+      command("grep -hir 'ssl_session_tickets\s' #{nginx_path}").stdout.split("\n").each do |ssl_session_tickets_option|
+
+         describe command("echo '#ssl_session_tickets_option.strip}'") do
+            its(:stdout) { should_not start_with("#") }
+            its(:stdout) { should include 'off' }
+         end
+
+      end
   end
 end
 
