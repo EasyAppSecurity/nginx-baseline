@@ -716,6 +716,16 @@ control 'cis-bench-4_1_13' do
          end
     end
 
+end
+
+control 'cis-bench-4_1_14' do
+  impact 0.5
+  title 'Check HTTP/2.0 is used'
+  desc 'HTTP/2.0 is an optimized and more secure version of the HTTP protocol. It should enabled so users can take advantage of it.'
+
+  describe command("grep -hir http2 #{nginx_path}") do
+    its(:stdout) { should_not be_empty }
+  end
 
 end
 
