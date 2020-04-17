@@ -698,14 +698,25 @@ control 'cis-bench-4_1_13' do
      its(:stdout) { should_not be_empty }
    end
 
-   command("grep -hir 'ssl_session_tickets\s' #{nginx_path}").stdout.split("\n").each do |ssl_session_tickets_option|
+   ssl_session_tickets_option_found = false
 
-      describe command("echo '#ssl_session_tickets_option.strip}'") do
-          its(:stdout) { should_not start_with("#") }
+   command("grep -hir 'ssl_session_tickets\s' #{nginx_path}").stdout.split("\n").each do |ssl_session_tickets_option|
+      next if ssl_session_tickets_option.strip.start_with?("#")
+      ssl_session_tickets_option_found = true
+
+      describe command("echo '#{ssl_session_tickets_option.strip}'") do
           its(:stdout) { should include 'off' }
       end
 
     end
+
+    if !ssl_session_tickets_option_found
+         describe command("echo '#{ssl_session_tickets_option_found}'") do
+            its(:stdout) { should eq 'true' }
+         end
+    end
+
+
 end
 
 
