@@ -729,4 +729,13 @@ control 'cis-bench-4_1_14' do
 
 end
 
+control 'cis-bench-5_1_1' do
+  impact 0.5
+  title 'Check allow and deny filters limit access to specific IP addresses'
+  desc 'IP-based restrictions act as a defense in depth mechanism. They allow you to whitelist legitimate paths to your applications and explicitly deny IP addresses you believe to be malicious.'
 
+  describe command("grep -hir 'deny\sall;' #{nginx_path}") do
+    its(:stdout) { should_not be_empty }
+  end
+
+end
