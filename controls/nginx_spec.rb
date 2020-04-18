@@ -739,3 +739,18 @@ control 'cis-bench-5_1_1' do
   end
 
 end
+
+control 'cis-bench-5_1_2' do
+  impact 1.0
+  title 'Check requests for unknown host names are rejected'
+  desc 'Whitelisting specific hosts and blocking access to all other hosts, you help to mitigate host header injection attacks against your server. Such attacks could be used by an attacker to redirect you to a rogue host and execute scripts or get you to input credentials.'
+
+  protocols = ['http', 'https']
+
+  protocols.each do |protocol|
+      describe http("#{protocol}://127.0.0.1", method: 'DELETE') do
+        its('status') { should cmp 444 }
+      end
+   end
+
+end
