@@ -22,6 +22,18 @@ You can also execute the profile directly from Github:
 $ inspec exec https://github.com/rusakovichma/nginx-baseline
 ```
 
+Test remote machine via ssh:
+
+```
+$ inspec exec https://github.com/rusakovichma/nginx-baseline --key-files /path/keys/ssh.key --target ssh://root@192.168.1.12
+```
+
+Report write to a file:
+
+```
+$ inspec exec https://github.com/rusakovichma/nginx-baseline --reporter html:/tmp/nginx-inspec-report.json
+```
+
 ## License and Author
 
 * Author:: Patrick Muench <patrick.muench1111@googlemail.com>
