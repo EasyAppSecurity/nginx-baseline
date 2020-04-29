@@ -754,3 +754,70 @@ control 'cis-bench-5_1_2' do
    end
 
 end
+
+control 'cis-bench-5_2_1' do
+  impact 1.0
+  title 'Check timeout values for reading the client header and body are set correctly'
+  desc 'Setting the client header and body timeouts help your server mitigate possible denial of service attacks. By timing out a request, the server is able to free up resources that may be waiting for the body or header.'
+
+  describe parse_config(nginx_parsed_config, options) do
+    its('client_body_timeout') { should eq CLIENT_BODY_TIMEOUT }
+  end
+  describe parse_config(nginx_parsed_config, options) do
+    its('client_header_timeout') { should eq CLIENT_HEADER_TIMEOUT }
+  end
+
+end
+
+control 'cis-bench-5_2_2' do
+  impact 1.0
+  title 'Check the maximum request body size is set correctly'
+  desc 'Limiting the size of the request body helps prevent unexpectedly long or large client requests from being passed to an application to perform buffer overflow attacks'
+
+  describe parse_config(nginx_parsed_config, options) do
+    its('client_max_body_size') { should eq CLIENT_MAX_BODY_SIZE }
+  end
+
+end
+
+control 'cis-bench-5_2_3' do
+  impact 1.0
+  title 'Check the maximum buffer size for URIs is defined '
+  desc 'The large_client_header_buffers directive may assist in preventing buffer overflow attacks that leverage long URI query parameters.'
+
+  describe parse_config(nginx_parsed_config, options) do
+    its('large_client_header_buffers') { should eq LARGE_CLIENT_HEADER_BUFFER }
+  end
+
+end
+
+control 'cis-bench-5_2_4' do
+  impact 0.5
+  title 'Check the number of connections per IP address is limited'
+  desc 'Limiting the number of simultaneous connections is an effective way to prevent slow denial of service attacks that try to use as many server resources as possible. This can also help prevent brute force attacks on a login page.'
+
+  describe command("grep -hir limitperip #{nginx_path}") do
+    its(:stdout) { should_not be_empty }
+  end
+
+end
+
+control 'cis-bench-5_2_5' do
+  impact 0.5
+  title 'Check rate limits by IP address are set'
+  desc 'Rate limiting allows you to mitigate potential denial of service attacks as a defense in depth mechanism'
+
+  describe command("grep -hir ratelimit #{nginx_path}") do
+    its(:stdout) { should_not be_empty }
+  end
+
+end
+
+control 'cis-bench-5_3_5' do
+  impact 1.0
+  title 'Check Referrer Policy is enabled and configured properly'
+  desc 'A Referrer header may expose sensitive data in another web servers log if you use sensitive data in your URL parameters, such as personal information, username, and password or persistent sessions'
+  describe parse_config(nginx_parsed_config, options_add_header) do
+    its('add_header') { should include 'Referrer-Policy "no-referrer"' }
+  end
+end
