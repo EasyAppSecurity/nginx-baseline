@@ -31,7 +31,7 @@ $ inspec exec https://github.com/rusakovichma/nginx-baseline --key-files /path/k
 Report write to a file:
 
 ```
-$ inspec exec https://github.com/rusakovichma/nginx-baseline --reporter html:/tmp/nginx-inspec-report.json
+$ inspec exec https://github.com/rusakovichma/nginx-baseline --reporter html:/tmp/nginx-inspec-report.html
 ```
 
 ## License and Author
