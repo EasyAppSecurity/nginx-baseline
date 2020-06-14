@@ -1,0 +1,8 @@
+vault_executable : /home/osboxes/vault
+vault_service : vault
+vault_service_path : /etc/systemd/system/vault.service
+vault_dir : /opt/vault
+vault_user : vault
+vault_tlscert : /opt/vault/ssl/server_cert.pem
+vault_tlskey : /opt/vaul/ssl/server_key.pem
+vault_config : /home/osboxes/config.hcl

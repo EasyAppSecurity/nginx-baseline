@@ -88,22 +88,40 @@ NGINX_COOKIE_FLAG_MODULE = attribute(
   default: false
 )
 
+nginx_path = attribute(
+  'nginx_path',
+  description: 'NGINX base directory path where nginx.conf file is located',
+  default: '/etc/nginx'
+).to_s
+
+nginx_static_path = attribute(
+  'nginx_static_path',
+  description: 'Path to NGINX static content (.html pages, .js files, etc. )',
+  default: '/usr/share/nginx/html'
+).to_s
+
+nginx_pid = attribute(
+  'nginx_pid',
+  description: 'Path to NGINX pid file (.pid)',
+  default: '/var/run/nginx.pid'
+).to_s
+
+logrotate_path = attribute(
+  'logrotate_path',
+  description: 'Path to NGINX logs rotation folder',
+  default: '/etc/logrotate.d'
+).to_s
+
+
 only_if do
   command('nginx').exist?
 end
 
-# determine all required paths
-nginx_path          = '/etc/nginx'
 nginx_conf          = File.join(nginx_path, 'nginx.conf')
 nginx_confd         = File.join(nginx_path, 'conf.d')
 nginx_enabled       = File.join(nginx_path, 'sites-enabled')
 nginx_parsed_config = command('nginx -T').stdout
 
-nginx_static_path   = '/usr/share/nginx/html'
-
-nginx_pid           = '/var/run/nginx.pid'
-
-logrotate_path      = '/etc/logrotate.d'
 nginx_logrotate_conf = File.join(logrotate_path, 'nginx')
 
 options = {
