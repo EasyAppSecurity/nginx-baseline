@@ -1,0 +1,15 @@
+client_max_body_size : 1k
+client_body_buffer_size : 1k
+client_header_buffer_size : 1k
+large_client_header_buffers : 2 1k
+keepalive_timeout : 5 5
+client_body_timeout : 10
+client_header_timeout : 10
+send_timeout : 10
+http_methods : GET\|HEAD\|POST
+http_methods_check : false
+nginx_cookie_flag_module : false
+nginx_path : /etc/nginx
+nginx_static_path : /usr/share/nginx/html
+nginx_pid : /var/run/nginx.pid
+logrotate_path : /etc/logrotate.d
