@@ -12,26 +12,26 @@ This Compliance Profile ensures, that all hardening projects keep the same quali
 This Compliance Profile requires [InSpec](https://github.com/chef/inspec) for execution:
 
 ```
-$ git clone https://github.com/rusakovichma/nginx-baseline
+$ git clone https://github.com/EasyAppSecurity/nginx-baseline
 $ inspec exec nginx-baseline --input-file nginx-baseline/attributes/nginx-centos7-test.yml --reporter html:/tmp/inspec-nginx.html
 ```
 
 You can also execute the profile directly from Github:
 
 ```
-$ inspec exec https://github.com/rusakovichma/nginx-baseline
+$ inspec exec https://github.com/EasyAppSecurity/nginx-baseline
 ```
 
 Test remote machine via ssh:
 
 ```
-$ inspec exec https://github.com/rusakovichma/nginx-baseline --key-files /path/keys/ssh.key --target ssh://root@192.168.1.12 --input-file nginx-baseline/attributes/nginx-centos7-test.yml --reporter html:/tmp/inspec-nginx.html
+$ inspec exec https://github.com/EasyAppSecurity/nginx-baseline --key-files /path/keys/ssh.key --target ssh://root@192.168.1.12 --input-file nginx-baseline/attributes/nginx-centos7-test.yml --reporter html:/tmp/inspec-nginx.html
 ```
 
 Report write to a file:
 
 ```
-$ inspec exec https://github.com/rusakovichma/nginx-baseline --input-file nginx-baseline/attributes/nginx-centos7-test.yml --reporter html:/tmp/inspec-nginx.html
+$ inspec exec https://github.com/EasyAppSecurity/nginx-baseline --input-file nginx-baseline/attributes/nginx-centos7-test.yml --reporter html:/tmp/inspec-nginx.html
 ```
 
 ## License and Author
